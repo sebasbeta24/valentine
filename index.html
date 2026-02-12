@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>For You ❤️</title>
+<style>
+body {
+  text-align:center;
+  font-family: Arial;
+  background:#ffe6f0;
+  padding-top:80px;
+}
+h1 { font-size:45px; color:#ff3366; }
+button {
+  font-size:22px;
+  padding:15px 30px;
+  margin:15px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+}
+.yes { background:#ff4d88; color:white; }
+.food { background:#ff944d; color:white; }
+.choco { background:#8b4513; color:white; }
+</style>
+</head>
+
+<body>
+
+<h1>Will you be my Valentine? 💘</h1>
+
+<button class="yes" onclick="sendYes()">Yes</button>
+<button class="food" onclick="sendFood()">Is that even a question? 💖</button>
+<button class="choco" onclick="sendChoco()">Ehhh.......</button>
+
+<script>
+function sendYes(){
+  window.location.href="https://docs.google.com/forms/d/e/1FAIpQLScka1BmCrlOFqkqmA4XSs-f0fsTaUss9SpWRcVXLFGtDAhDVg/viewform?usp=pp_url&entry.647952215=Yes";
+}
+function sendFood(){
+  window.location.href="https://docs.google.com/forms/d/e/1FAIpQLScka1BmCrlOFqkqmA4XSs-f0fsTaUss9SpWRcVXLFGtDAhDVg/viewform?usp=pp_url&entry.647952215=Is+that+even+a+question?";
+}
+function sendChoco(){
+  window.location.href="https://docs.google.com/forms/d/e/1FAIpQLScka1BmCrlOFqkqmA4XSs-f0fsTaUss9SpWRcVXLFGtDAhDVg/viewform?usp=pp_url&entry.647952215=Ehhh......";
+}
+</script>
+
+</body>
+</html>
