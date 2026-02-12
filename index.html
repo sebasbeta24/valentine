@@ -93,12 +93,27 @@
       border-radius: 999px;
       font-size: 12px;
     }
+	/* iPhone-safe explicit music button */
+    #startMusicBtn{
+      width:100%;
+      margin: 0 0 12px;
+      background: rgba(255,51,102,0.12);
+      color:#a3123b;
+      border: 1px solid rgba(255,51,102,0.18);
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      cursor:pointer;
+    }
   </style>
 </head>
 <body>
   <div class="card" id="card">
     <div class="musicBadge" id="musicBadge">🔊 Tap anywhere to start music</div>
 
+    <!-- iPhone-friendly music start button -->
+    <button id="startMusicBtn">▶️ Tap to start music</button>
+	
     <div class="photo">
       <!-- Put your couple photo in the repo as us.jpg -->
       <img src="us.jpg" alt="Us ❤️" />
@@ -121,27 +136,32 @@
   </div>
 
   <script>
-    // === 1) MUSIC: iOS requires a user gesture to start audio ===
+    // =========================
+    // 1) MUSIC (iPhone-safe)
+    // =========================
     const bgm = document.getElementById('bgm');
     const badge = document.getElementById('musicBadge');
-    let musicStarted = false;
+    const startBtn = document.getElementById('startMusicBtn');
 
-    function startMusicOnce(){
-      if (musicStarted) return;
-      musicStarted = true;
-      bgm.volume = 0.55;
-      bgm.play().then(() => {
+    async function startMusic(){
+      try{
+        bgm.volume = 0.55;
+        await bgm.play();
         badge.textContent = "🎶 Music on";
-        setTimeout(() => badge.style.display = "none", 1400);
-      }).catch(() => {
-        // If blocked, keep the badge so she can tap again
+        startBtn.textContent = "🎶 Music playing";
+        setTimeout(() => {
+          badge.style.display = "none";
+          startBtn.style.display = "none";
+        }, 900);
+      }catch(e){
+        // keep button visible so she can tap again
         badge.textContent = "🔊 Tap again to start music";
-        musicStarted = false;
-      });
+        startBtn.textContent = "Tap again to start music";
+      }
     }
 
-    document.addEventListener('click', startMusicOnce, { passive: true });
-    document.addEventListener('touchstart', startMusicOnce, { passive: true });
+    // Start music ONLY from explicit button (best reliability on iOS)
+    startBtn.addEventListener('click', startMusic);
 
     // === 2) RUNAWAY NO BUTTON ===
     const noBtn = document.getElementById('noBtn');
@@ -188,16 +208,19 @@
     };
 
     function send(choice){
-      // little confirmation screen
+      // Submit silently (no Google page)
+      fetch(LINKS[choice], { method: "POST", mode: "no-cors" });
+
+      // Keep music playing (don’t stop audio element)
       card.innerHTML = `
         <div style="padding:24px;">
-          <h1 style="margin-top:0;">Recording your answer… 💌</h1>
-          <p style="color:#6b2a3a;">Choice: <b>${choice}</b></p>
-          <p style="color:#6b2a3a;">Opening the secret portal…</p>
+          <h1 style="margin-top:0;color:#ff3366;">YAY!! 💌</h1>
+          <p style="color:#6b2a3a;">Answer recorded: <b>${choice}</b></p>
+          <p style="color:#6b2a3a;">Okay… now I’m planning something 😏❤️</p>
         </div>
       `;
-
-      // Redirect to prefilled Google Form submit link
-      setTimeout(() => {
-       
+    }
+  </script>
+</body>
+</html>
 
