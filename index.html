@@ -1,48 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>For You ❤️</title>
-<style>
-body {
-  text-align:center;
-  font-family: Arial;
-  background:#ffe6f0;
-  padding-top:80px;
-}
-h1 { font-size:45px; color:#ff3366; }
-button {
-  font-size:22px;
-  padding:15px 30px;
-  margin:15px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-}
-.yes { background:#ff4d88; color:white; }
-.food { background:#ff944d; color:white; }
-.choco { background:#8b4513; color:white; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Secret Valentine Portal 💘</title>
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, #ffe6f0, #ffd1e6);
+      overflow:hidden;
+      padding: 24px;
+    }
+    .card{
+      width:min(560px, 95vw);
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(255, 51, 102, 0.18);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+      border-radius: 18px;
+      padding: 18px 18px 22px;
+      text-align:center;
+      position:relative;
+    }
+    .photo{
+      width:100%;
+      border-radius: 14px;
+      overflow:hidden;
+      margin-bottom: 14px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .photo img{
+      width:100%;
+      height:auto;
+      display:block;
+      object-fit:cover;
+    }
+    h1{
+      margin: 10px 0 6px;
+      font-size: 34px;
+      color:#ff3366;
+      letter-spacing: 0.2px;
+    }
+    .sub{
+      margin: 0 0 16px;
+      color:#6b2a3a;
+      font-size: 15px;
+    }
+    .buttons{
+      display:flex;
+      gap: 12px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top: 14px;
+    }
+    button{
+      font-size:18px;
+      padding: 14px 18px;
+      border:none;
+      border-radius: 14px;
+      cursor:pointer;
+      transition: transform 0.08s ease;
+      user-select:none;
+      touch-action: manipulation;
+    }
+    button:active{ transform: scale(0.98); }
+    .yes{ background:#ff4d88; color:white; }
+    .food{ background:#ff944d; color:white; }
+    .choco{ background:#8b4513; color:white; }
+    .no{
+      background:#e8e8e8;
+      color:#333;
+      position: relative; /* will become absolute once it starts running */
+    }
+    .hint{
+      margin-top: 12px;
+      font-size: 12px;
+      color:#7a4a58;
+      opacity:0.9;
+    }
+    .musicBadge{
+      position:absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,51,102,0.12);
+      color:#a3123b;
+      border: 1px solid rgba(255,51,102,0.18);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="card" id="card">
+    <div class="musicBadge" id="musicBadge">🔊 Tap anywhere to start music</div>
 
-<h1>Will you be my Valentine? 💘</h1>
+    <div class="photo">
+      <!-- Put your couple photo in the repo as us.jpg -->
+      <img src="us.jpg" alt="Us ❤️" />
+    </div>
 
-<button class="yes" onclick="sendYes()">Yes</button>
-<button class="food" onclick="sendFood()">Is that even a question? 💖</button>
-<button class="choco" onclick="sendChoco()">Ehhh.......</button>
+    <h1>Will you be my Valentine? 💘</h1>
+    <p class="sub">You have unlocked a hidden level… choose wisely 😌</p>
 
-<script>
-function sendYes(){
-  window.location.href="https://docs.google.com/forms/d/e/1FAIpQLScka1BmCrlOFqkqmA4XSs-f0fsTaUss9SpWRcVXLFGtDAhDVg/viewform?usp=pp_url&entry.647952215=Yes";
-}
-function sendFood(){
-  window.location.href="https://docs.google.com/forms/d/e/1FAIpQLScka1BmCrlOFqkqmA4XSs-f0fsTaUss9SpWRcVXLFGtDAhDVg/viewform?usp=pp_url&entry.647952215=Is+that+even+a+question?";
-}
-function sendChoco(){
-  window.location.href="https://docs.google.com/forms/d/e/1FAIpQLScka1BmCrlOFqkqmA4XSs-f0fsTaUss9SpWRcVXLFGtDAhDVg/viewform?usp=pp_url&entry.647952215=Ehhh......";
-}
-</script>
+    <div class="buttons">
+      <button class="yes" onclick="send('YES 💖')">YES 💖</button>
+      <button class="food" onclick="send('YES BUT WITH FOOD 🍕')">YES BUT WITH FOOD 🍕</button>
+      <button class="choco" onclick="send('I NEED CHOCOLATE 🍫')">I NEED CHOCOLATE 🍫</button>
+      <button class="no" id="noBtn">NO 😅</button>
+    </div>
 
-</body>
-</html>
+    <div class="hint">P.S. The “NO” button might be… shy.</div>
+
+    <!-- Put your mp3 in the repo as song.mp3 -->
+    <audio id="bgm" src="song.mp3" preload="auto" loop></audio>
+  </div>
+
+  <script>
+    // === 1) MUSIC: iOS requires a user gesture to start audio ===
+    const bgm = document.getElementById('bgm');
+    const badge = document.getElementById('musicBadge');
+    let musicStarted = false;
+
+    function startMusicOnce(){
+      if (musicStarted) return;
+      musicStarted = true;
+      bgm.volume = 0.55;
+      bgm.play().then(() => {
+        badge.textContent = "🎶 Music on";
+        setTimeout(() => badge.style.display = "none", 1400);
+      }).catch(() => {
+        // If blocked, keep the badge so she can tap again
+        badge.textContent = "🔊 Tap again to start music";
+        musicStarted = false;
+      });
+    }
+
+    document.addEventListener('click', startMusicOnce, { passive: true });
+    document.addEventListener('touchstart', startMusicOnce, { passive: true });
+
+    // === 2) RUNAWAY NO BUTTON ===
+    const noBtn = document.getElementById('noBtn');
+    const card = document.getElementById('card');
+
+    function moveNoButton(){
+      // Convert to absolute so we can place it anywhere inside the card
+      const rect = card.getBoundingClientRect();
+
+      noBtn.style.position = "absolute";
+
+      // Keep it inside the card padding area
+      const padding = 16;
+      const maxX = rect.width - noBtn.offsetWidth - padding;
+      const maxY = rect.height - noBtn.offsetHeight - padding;
+
+      // Random new position
+      const x = Math.max(padding, Math.random() * maxX);
+      const y = Math.max(padding, Math.random() * maxY);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+    }
+
+    // Runs away on hover (desktop) + on touch (mobile)
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    noBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive:false });
+
+    // Also run away if she somehow clicks it
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+
+    // === 3) SEND ANSWER ===
+    // Replace these with your prefilled Google Form links
+    const LINKS = {
+      "Yes": "https://docs.google.com/forms/d/e/1FAIpQLScka1BmCrlOFqkqmA4XSs-f0fsTaUss9SpWRcVXLFGtDAhDVg/formResponse?usp=pp_url&entry.647952215=Yes",
+      "IS THAT EVEN A QUESTION? 💖": "https://docs.google.com/forms/d/e/1FAIpQLScka1BmCrlOFqkqmA4XSs-f0fsTaUss9SpWRcVXLFGtDAhDVg/formResponse?usp=pp_url&entry.647952215=Is+that+even+a+question?",
+      "Ehhhhhh": "https://docs.google.com/forms/d/e/1FAIpQLScka1BmCrlOFqkqmA4XSs-f0fsTaUss9SpWRcVXLFGtDAhDVg/formResponse?usp=pp_url&entry.647952215=Ehhh......"
+    };
+
+    function send(choice){
+      // little confirmation screen
+      card.innerHTML = `
+        <div style="padding:24px;">
+          <h1 style="margin-top:0;">Recording your answer… 💌</h1>
+          <p style="color:#6b2a3a;">Choice: <b>${choice}</b></p>
+          <p style="color:#6b2a3a;">Opening the secret portal…</p>
+        </div>
+      `;
+
+      // Redirect to prefilled Google Form submit link
+      setTimeout(() => {
+       
+
